@@ -45,7 +45,7 @@ function changeVersion(form) {
     }
 </script>
 
-<h1 style="text-align: center;"><a href="https://forums.unraid.net/" target="_blank" rel="noopener"><span style="color: green;">Nvidia Driver Package</span></a></h1>
+<h1 style="text-align: center;"><a href="https://forums.unraid.net/" target="_blank" rel="noopener"><span style="color: green;">Nvidia vGPU Driver Package</span></a></h1>
 
 <div style="width: 50%; float:left">
     <div id="title">

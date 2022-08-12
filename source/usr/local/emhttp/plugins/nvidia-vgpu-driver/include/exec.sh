@@ -3,19 +3,20 @@
 function update(){
 KERNEL_V="$(uname -r)"
 PACKAGE="nvidia"
+vgpu_V="515.57"
 CURENTTIME=$(date +%s)
 CHK_TIMEOUT=300
 if [ -f /tmp/nvidia_vgpu_driver ]; then
   FILETIME=$(stat /tmp/nvidia_vgpu_driver -c %Y)
   DIFF=$(expr $CURENTTIME - $FILETIME)
   if [ $DIFF -gt $CHK_TIMEOUT ]; then
-    echo -n "$(wget -qO- https://api.github.com/repos/stl88083365/unraid-nvidia-vgpu-driver/releases/tags/${KERNEL_V} | jq -r '.assets[].name' | grep "${PACKAGE}" | grep -E -v '\.md5$' | awk -F "-" '{print $2}' | sort -V | tail -10)" > /tmp/nvidia_vgpu_driver
+    echo -n "$(wget -qO- https://api.github.com/repos/stl88083365/unraid-nvidia-vgpu-driver/releases/tags/${KERNEL_V} | jq -r '.assets[].name' | grep "${PACKAGE}" | grep -E -v '\.md5$' | awk -F "-" '{print $3}' | sort -V | tail -10)" > /tmp/nvidia_vgpu_driver
     if [ ! -s /tmp/nvidia_vgpu_driver ]; then
       echo -n "$(modinfo nvidia | grep "version:" | awk '{print $2}' | head -1)" > /tmp/nvidia_vgpu_driver
     fi
   fi
 else
-  echo -n "$(wget -qO- https://api.github.com/repos/stl88083365/unraid-nvidia-vgpu-driver/releases/tags/${KERNEL_V} | jq -r '.assets[].name' | grep "${PACKAGE}" | grep -E -v '\.md5$' | awk -F "-" '{print $2}' | sort -V | tail -10)" > /tmp/nvidia_vgpu_driver
+  echo -n "$(wget -qO- https://api.github.com/repos/stl88083365/unraid-nvidia-vgpu-driver/releases/tags/${KERNEL_V} | jq -r '.assets[].name' | grep "${PACKAGE}" | grep -E -v '\.md5$' | awk -F "-" '{print $3}' | sort -V | tail -10)" > /tmp/nvidia_vgpu_driver
   if [ ! -s /tmp/nvidia_vgpu_driver ]; then
     echo -n "$(modinfo nvidia | grep "version:" | awk '{print $2}' | head -1)" > /tmp/nvidia_vgpu_driver
   fi
