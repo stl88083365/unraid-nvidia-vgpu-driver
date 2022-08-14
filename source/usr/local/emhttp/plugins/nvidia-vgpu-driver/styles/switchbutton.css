@@ -1,0 +1,5 @@
+.ca-switch-button-label{float:left;font-size:10pt;cursor:pointer;}
+.ca-switch-button-label.off{color:#adadad;}
+.ca-switch-button-label.on{color:#0088CC;}
+.ca-switch-button-background{float:left;position:relative;background:#a00;border:1px solid #aaa;margin:1px 10px;border-radius:4px;cursor:pointer;}
+.ca-switch-button-button{position:absolute;left:-1px;top:-1px;background:#FAFAFA;border:1px solid #aaa;border-radius:4px;}
