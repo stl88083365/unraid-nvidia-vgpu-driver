@@ -23,7 +23,7 @@ if wget -q -nc --show-progress --progress=bar:force:noscroll -O "/boot/config/pl
 else
   echo
   echo "---------------Can't download Nvidia Driver Package v$(echo $LAT_PACKAGE | cut -d '-' -f2)----------------"
-  /usr/local/emhttp/plugins/dynamix/scripts/notify -e "Nvidia vGPU Driver" -d "Found new Nvidia Driver v${LATEST_V} but a download error occurred! Please try to download the driver manually!" -i "alert" -l "/Settings/nvidia-vgpu-driver"
+  /usr/local/emhttp/plugins/dynamix/scripts/notify -e "Nvidia vGPU Driver" -d "Found new Nvidia vGPU Driver v${LATEST_V} but a download error occurred! Please try to download the driver manually!" -i "alert" -l "/Settings/nvidia-vgpu-driver"
   crontab -l | grep -v '/usr/local/emhttp/plugins/nvidia-vgpu-driver/include/update-check.sh'  | crontab -
   exit 1
 fi
@@ -35,7 +35,7 @@ if [[ "${SET_DRV_V}" != "latest" && "${SET_DRV_V}" != "latest_prb" && "${SET_DRV
 elif [ "${SET_DRV_V}" == "latest" ]; then
   LAT_PACKAGE="$(wget -qO- https://api.github.com/repos/stl88083365/unraid-nvidia-vgpu-driver/releases/tags/${KERNEL_V} | jq -r '.assets[].name' | grep "$PACKAGE" | grep -E -v '\.md5$' | sort -V | tail -1)"
   if [ -z ${LAT_PACKAGE} ]; then
-    logger "Nvidia-Driver-Plugin: Automatic update check failed, can't get latest version number!"
+    logger "Nvidia-vGPU-Driver-Plugin: Automatic update check failed, can't get latest version number!"
     exit 1
   elif [ "$(echo "$LAT_PACKAGE" | cut -d '-' -f2)" != "${INSTALLED_V}" ]; then
     download
@@ -45,7 +45,7 @@ elif [ "${SET_DRV_V}" == "latest_prb" ]; then
   PRB_V="$(wget -qO- https://raw.githubusercontent.com/stl88083365/versions/master/nvidia_vgpu_versions | grep "PRB" | cut -d '=' -f2 | sort -V)"
   LAT_PACKAGE="$(comm -12 <(echo "$(echo "$AVAIL_V" | cut -d '-' -f2)") <(echo "${PRB_V}") | tail -1)"
   if [ -z ${LAT_PACKAGE} ]; then
-    logger "Nvidia-Driver-Plugin: Automatic update check failed, can't get latest Production Branch version number!"
+    logger "Nvidia-vGPU-Driver-Plugin: Automatic update check failed, can't get latest Production Branch version number!"
     exit 1
   elif [ "$(echo "$LAT_PACKAGE" | cut -d '-' -f2)" != "${INSTALLED_V}" ]; then
     download
@@ -55,7 +55,7 @@ elif [ "${SET_DRV_V}" == "latest_nfb" ]; then
   NFB_V="$(wget -qO- https://raw.githubusercontent.com/stl88083365/versions/master/nvidia_vgpu_versions | grep "NFB" | cut -d '=' -f2 | sort -V)"
   LAT_PACKAGE="$(comm -12 <(echo "$(echo "$AVAIL_V" | cut -d '-' -f2)") <(echo "${NFB_V}") | tail -1)"
   if [ -z ${LAT_PACKAGE} ]; then
-    logger "Nvidia-Driver-Plugin: Automatic update check failed, can't get latest New Feature Branch version number!"
+    logger "Nvidia-vGpu-Driver-Plugin: Automatic update check failed, can't get latest New Feature Branch version number!"
     exit 1
   elif [ "$(echo "$LAT_PACKAGE" | cut -d '-' -f2)" != "${INSTALLED_V}" ]; then
     download

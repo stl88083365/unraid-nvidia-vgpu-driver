@@ -6,7 +6,7 @@
   <!ENTITY launch    "Settings/nvidia-vgpu-driver">
   <!ENTITY gitURL    "https://github.com/&author;/unraid-&name;/raw/master">
   <!ENTITY pluginURL "&gitURL;/&name;.plg">
-  <!ENTITY md5       "930784be16b0af7ccb6f5a1ed6929642">
+  <!ENTITY md5       "c20525d146fdfb8ef5c7f927fa50a74d">
   <!ENTITY plugin    "/boot/config/plugins/&name;">
   <!ENTITY emhttp    "/usr/local/emhttp/plugins/&name;">
   <!ENTITY packages  "/boot/config/plugins/&name;/packages">
@@ -154,14 +154,14 @@ if find &packages; -maxdepth 1 -type f -name "*.txz" 2>/dev/null ; then
   CUR_V="$(ls -p &packages;/${KERNEL_V%%-*} 2&gt;/dev/null | grep -E -v '\.md5' | sort -V | tail -1)"
 fi
 
-#Check if Nvidia Driver Package is already downloaded
+#Check if Nvidia vgpu Driver Package is already downloaded
 check
 
-#Check for old packages that are not suitable for this Kernel and not suitable for the current Nvidia driver version
+#Check for old packages that are not suitable for this Kernel and not suitable for the current Nvidia vgpu driver version
 rm -f $(ls -d &packages;/* 2>/dev/null | grep -v "${KERNEL_V%%-*}")
 rm -f $(ls &packages;/${KERNEL_V%%-*}/* 2>/dev/null | grep -v "$LAT_PACKAGE")
 
-#Install Nvidia Driver Package
+#Install Nvidia vgpu Driver Package
 if ! modinfo nvidia -0 >/dev/null 2>&amp;1 ; then
   echo
   echo "-----------------Installing Nvidia Vgpu Driver Package v$(echo $LAT_PACKAGE | cut -d '-' -f2)-------------------"
@@ -180,16 +180,16 @@ fi
 
 #Display message to disable and enable Docker on first installation or display successful message
 if [ "$(grep "first_installation=" "&plugin;/settings.cfg" | cut -d '=' -f2)" == "true" ]; then
-  /usr/local/emhttp/plugins/dynamix/scripts/notify -e "Nvidia Vgpu Driver" -d "Please make sure to disable and enable Docker if you installed the Nvidia driver for the first time! Settings -> Docker -> Enable Docker 'No' -> Apply -> Enable Docker 'Yes' -> Apply" -i "alert" -l "/Settings/DockerSettings"
+  /usr/local/emhttp/plugins/dynamix/scripts/notify -e "Nvidia Vgpu Driver" -d "Please go to -> Settings -> nvidia-vgpu-driver Perform Set up"
   sed -i '/first_installation=true/c\first_installation=false' "&plugin;/settings.cfg"
   echo
-  echo "------------Installation of Nvidia driver v$(echo $LAT_PACKAGE | cut -d '-' -f2) successful----------------"
+  echo "------------Installation of Nvidia vgpu driver v$(echo $LAT_PACKAGE | cut -d '-' -f2) successful----------------"
   echo
-  echo "Please make sure to disable and enable Docker if you installed the Nvidia driver for the first time! Settings -> Docker -> Enable Docker 'No' -> Apply -> Enable Docker 'Yes' -> Apply"
+  echo "Nvidia Vgpu Driver" -d "Please go to -> Settings -> nvidia-vgpu-driver Perform Set up"
 else
   sed -i '/first_installation=true/c\first_installation=false' "&plugin;/settings.cfg"
   echo
-  echo "--------------Installation of Nvidia driver v$(echo $LAT_PACKAGE | cut -d '-' -f2) successful--------------"
+  echo "--------------Installation of Nvidia vgpu driver v$(echo $LAT_PACKAGE | cut -d '-' -f2) successful--------------"
 fi
 
 #Check if Plugin Update Helper is downloaded and up-to-date
@@ -239,16 +239,16 @@ fi
 <INLINE>
 
 echo "----------------------------------------"
-echo "---Uninstalling Nvidia driver package---"
+echo "---Uninstalling Nvidia vGPU driver package---"
 echo "----------------------------------------"
 # Remove plugin related files
 removepkg &name;-&version;
-crontab -l | grep -v '/usr/local/emhttp/plugins/nvidia-driver/include/update-check.sh &amp;&gt;/dev/null 2&gt;&amp;1'  | crontab -
+crontab -l | grep -v '/usr/local/emhttp/plugins/nvidia-vgpu-driver/include/update-check.sh &amp;&gt;/dev/null 2&gt;&amp;1'  | crontab -
 rm -rf /usr/local/emhttp/plugins/&name;
 rm -rf &plugin;
 echo
 echo "--------------------------------------------------------------------------------"
-echo "-------------Nvidia Driver uninstalled, please reboot your server!--------------"
+echo "-------------Nvidia vGPU Driver uninstalled, please reboot your server!--------------"
 echo "--------------------------------------------------------------------------------"
 echo
 
