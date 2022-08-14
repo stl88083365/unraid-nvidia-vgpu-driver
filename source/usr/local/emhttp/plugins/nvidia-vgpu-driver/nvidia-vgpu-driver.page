@@ -19,6 +19,12 @@ $latest_nfb_v = shell_exec('/usr/local/emhttp/plugins/nvidia-vgpu-driver/include
 //Get current installed driver version
 $installed_v = shell_exec('/usr/local/emhttp/plugins/nvidia-vgpu-driver/include/exec.sh get_installed_version');
 
+//Get mdevctl list
+$mdev_list = shell_exec('/usr/local/emhttp/plugins/nvidia-vgpu-driver/include/exec.sh get_mdev_list');
+
+//Get UUID
+$uuid_gen = shell_exec('/usr/local/emhttp/plugins/nvidia-vgpu-driver/include/exec.sh get_uuid_gen');
+
 //Read driver versions from '/tmp/nvidia_vgpu_driver'
 error_reporting(E_ALL);
 ini_set('display_errors',1);
@@ -34,6 +40,14 @@ $eachlines = file($filename, FILE_IGNORE_NEW_LINES);
 //Don't execute commands again if page is refreshed
     if ( window.history.replaceState ) {
         window.history.replaceState( null, null, window.location.href );
+    }
+</script>
+
+<script>
+function changeVersion(form) {
+    var package = form.drv_version.value;
+    openBox("/usr/local/emhttp/plugins/nvidia-vgpu-driver/include/exec.sh&arg1=update_version&arg2="+package,"Downloading Package",600,800,true);
+    return false;
     }
 </script>
 
@@ -63,12 +77,85 @@ function changeVersion(form) {
             <td>Installed GPU(s):</td>
             <td style="color:green"><b><?=`nvidia-smi --query-gpu=index,name,gpu_bus_id,uuid --format=csv,noheader | tr "," "\n" | sed 's/^[ \t]*//' | sed -e s/00000000://g | sed '0~4G' | sed 's/^[0-9]$/&:/' | sed 's/$/<br>/'`?></b></td>
         </tr>
+
+        <tr>
+            <td>Mdevctl List:</td>
+				<? if (trim($mdev_list ) !== ''): ?>
+					<td style="color:green"><b><?=`mdevctl list | sed 's/$/<br>/'`?></b></td>				
+				<? else: ?>
+					<td>Please create Mdev List!!!</td>
+				<? endif; ?>
+        </tr>
+		<tr>
+		<td>Create Mdevctl List:</td>
+		<td><form action='' method="post" >
+				<table class="settings">	
+								<td>nvidia-<input type="text" name="post_mdevID" size="3" style="width:100px;height:26px;" required></td>
+								<td><input type="submit" name="mdevLISTcheck" value="mdevctl start"></td>
+				</table>
+			</form>
+		</td>	
+		</tr>	
     </table>
 </div>
 
 <div style="width: 50%; float:right">
     <div id="title">
         <span class="right"></span>
+    </div>
+    <table class="settings">
+        <tr>
+            <b><font size="+1">Mdevctl types:</font></b>
+        </tr>
+        <tr>
+			<td style="color:green"><b><?=`mdevctl types | sed 's/^[ \t]*//' | sed 's/$/<br>/'`?></b></td>
+		</tr>
+	</table>
+</div>
+
+<div style="width: 50%; float:left">
+    <div id="title">
+        <span class="left"></span>
+    </div>
+    <table class="settings">
+        <tr>
+            <td><b><font size="+1">System Info</font></b></td>
+        </tr>
+        <tr>
+            <td>Unraid Version:</td>
+            <td style="color: #99cc00;"><b><?=`cat /etc/unraid-version | cut -d '"' -f2`?></b></td>
+        </tr>
+        <tr>
+            <td>Kernel:</td>
+            <td style="color: #99cc00;"><b><?=`uname -r`?></b></td>
+        </tr>
+        <tr>
+        </tr>
+    </table>
+    <? if (isset($selected_v ) === true && trim($selected_v ) === 'latest' || trim($selected_v ) === 'latest_prb' || trim($selected_v ) === 'latest_nfb'): ?>
+    <div id="title">
+        <span class="left"></span>
+    </div>
+    	<table class="settings">
+		<tr><td>
+		<b><font size="+1">Driver Update Notification</font></b>
+		</td></tr>
+		<tr><td>
+		<form id="s" method="post" >
+		<select name="updata_check_selected" required>
+                    <option <?php echo ( $update_check == "true") ? 'selected="selected"' : '' ?> value="true"> Enabled</option>
+                    <option <?php echo ( $update_check == "false") ? 'selected="selected"' : '' ?> value="false"> Disabled</option>
+                </select>
+                <input type="submit" name="changeUPDcheck" value="Change">
+                </form>
+                </td>
+                <tr><td><p>The Driver Update Notification, checks once a day (between 8 am and 10 am) whether a new version of the selected branch is available and, if necessary, downloads the new driver and sends a notification.</p>
+			<p><b>The server has to be restarted in order to install the new driver.</b></p>
+		</tr></td>
+	</table>
+     <? endif; ?>
+	    <div id="title">
+        <span class="lift"></span>
     </div>
     <table class="settings">
         <tr>
@@ -122,66 +209,20 @@ function changeVersion(form) {
             </tr>
             </form>
             </table>
-	<table class="settings">
-		<p style="text-align: left; font-weight: bold;">ATTENTION: If you set the version to 'latest', 'Production Branch' or 'New Feature Branch' you either have to enable the Driver Update Notification (this will download the driver automatically) or if you disabled the Driver Update Notification you manually have to click the button "Update & Download" to download a newer driver.<br>Please keep in mind, to install a newer driver you have to reboot your server.</p>
-		<br>
-		<p><b><font size+1> Latest versions:</font></b></p>
-		<ul>
-		  <p>
-		  <li><b>latest</b> - will always download the latest driver version available regardless of the branch</li><br>
-		  <li><b>Production Branch</b>  - This is the long lifecycle (i.e., multiple releases in a branch over a single year period) driver branch providing ISV Certification, optimal stability and performance, and regular security updates for NVIDIA RTX/Quadro professional customers. This driver was previously named, Optimal Driver for Enterprise (ODE), and is most commonly deployed in production systems at enterprises.</li><br>
-		  <li><b>New Feature Branch</b>  - This is a short lived branch driver (i.e., 1-2 releases per branch only) where new NVIDIA RTX/Quadro features are introduced and made available between Production Branch releases. New Feature Branch drivers, previously named, Quadro New Feature (QNF), typically provide support for new operating systems, third party hardware, and game engines.</li>
-		  </p></ul>
-	</table>
-</div>
-
-<div style="width: 50%; float:left">
-    <div id="title">
-        <span class="left"></span>
-    </div>
-    <table class="settings">
-        <tr>
-            <td><b><font size="+1">System Info</font></b></td>
-        </tr>
-        <tr>
-            <td>Unraid Version:</td>
-            <td style="color: #99cc00;"><b><?=`cat /etc/unraid-version | cut -d '"' -f2`?></b></td>
-        </tr>
-        <tr>
-            <td>Kernel:</td>
-            <td style="color: #99cc00;"><b><?=`uname -r`?></b></td>
-        </tr>
-        <tr>
-        </tr>
-    </table>
-    <? if (isset($selected_v ) === true && trim($selected_v ) === 'latest' || trim($selected_v ) === 'latest_prb' || trim($selected_v ) === 'latest_nfb'): ?>
-    <div id="title">
-        <span class="left"></span>
-    </div>
-    	<table class="settings">
-		<tr><td>
-		<b><font size="+1">Driver Update Notification</font></b>
-		</td></tr>
-		<tr><td>
-		<form id="s" method="post" >
-		<select name="updata_check_selected" required>
-                    <option <?php echo ( $update_check == "true") ? 'selected="selected"' : '' ?> value="true"> Enabled</option>
-                    <option <?php echo ( $update_check == "false") ? 'selected="selected"' : '' ?> value="false"> Disabled</option>
-                </select>
-                <input type="submit" name="changeUPDcheck" value="Change">
-                </form>
-                </td>
-                <tr><td><p>The Driver Update Notification, checks once a day (between 8 am and 10 am) whether a new version of the selected branch is available and, if necessary, downloads the new driver and sends a notification.</p>
-			<p><b>The server has to be restarted in order to install the new driver.</b></p>
-		</tr></td>
-	</table>
-     <? endif; ?>
 </div>
 
 <?php
 if(isset($_POST['changeUPDcheck'])) {
 $updata_check_selected = $_POST["updata_check_selected"];
 shell_exec("/usr/local/emhttp/plugins/nvidia-vgpu-driver/include/exec.sh change_update_check ".escapeshellarg($updata_check_selected)."");
+echo '<script>parent.window.location.reload();</script>';
+}
+?>
+
+<?php
+if(!empty($_POST['mdevLISTcheck'])){
+$post_mdevID = $_POST['post_mdevID'];
+shell_exec("/usr/local/emhttp/plugins/nvidia-vgpu-driver/include/exec.sh get_types_num ".escapeshellarg($post_mdevID)."");
 echo '<script>parent.window.location.reload();</script>';
 }
 ?>

@@ -69,6 +69,24 @@ function update_check(){
 echo -n "$(cat /boot/config/plugins/nvidia-vgpu-driver/settings.cfg | grep "update_check" | cut -d '=' -f2)"
 }
 
+function get_nvidia_pci_id(){
+echo -n "$(nvidia-smi --query-gpu=index,name,gpu_bus_id,uuid --format=csv,noheader | tr "," "\n" | sed 's/^[ \t]*//' | sed -e s/00000000://g | sed -n '3p')"
+}
+
+function get_mdev_list(){
+echo -n "$(mdevctl list)"
+}
+
+function get_uuid_gen(){
+echo -n "$(uuidgen)"
+}
+
+function get_types_num(){
+idgen=$(uuidgen)
+pcid=$(nvidia-smi --query-gpu=index,name,gpu_bus_id,uuid --format=csv,noheader | tr "," "\n" | sed 's/^[ \t]*//' | sed -e s/00000000://g | sed -n '3p')
+mdevctl start -u $idgen -p "0000:"$pcid -t nvidia-"${1}"
+}
+
 function change_update_check(){
 sed -i "/update_check=/c\update_check=${1}" "/boot/config/plugins/nvidia-vgpu-driver/settings.cfg"
 if [ "${1}" == "true" ]; then
