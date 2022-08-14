@@ -56,10 +56,10 @@ if wget -q -nc --show-progress --progress=bar:force:noscroll -O "&packages;/${KE
   fi
   echo
   sed -i '/driver_version=/c\driver_version=latest' "&plugin;/settings.cfg"
-  echo "----Successfully downloaded Nvidia Vgpu Driver Package v$(echo $LAT_PACKAGE | cut -d '-' -f2), please wait!----"
+  echo "----Successfully downloaded Nvidia Vgpu Driver Package v$(echo $LAT_PACKAGE | cut -d '-' -f3), please wait!----"
 else
   echo
-  echo "--------------Can't download Nvidia Driver Package v$(echo $LAT_PACKAGE | cut -d '-' -f2)-----------------"
+  echo "--------------Can't download Nvidia Driver Package v$(echo $LAT_PACKAGE | cut -d '-' -f3)-----------------"
   rm -rf &plugin; &emhttp;
   exit 1
 fi
@@ -93,13 +93,13 @@ if ! ls -1 &packages;/${KERNEL_V%%-*}/ | grep -q "${PACKAGE}" ; then
   echo "| WARNING - WARNING - WARNING - WARNING - WARNING - WARNING - WARNING - WARNING"
   echo "+=============================================================================="
   echo
-  echo "-----------------Downloading Nvidia Vgpu Driver Package v$(echo $LAT_PACKAGE | cut -d '-' -f2)------------------"
+  echo "-----------------Downloading Nvidia Vgpu Driver Package v$(echo $LAT_PACKAGE | cut -d '-' -f3)------------------"
   echo "----------This could take some time, please don't close this window!------------"
   download
 else
   LAT_PACKAGE=$CUR_V
   echo
-  echo "--------------------Nvidia vgpu driver v$(echo $LAT_PACKAGE | cut -d '-' -f2) found locally---------------------"
+  echo "--------------------Nvidia vgpu driver v$(echo $LAT_PACKAGE | cut -d '-' -f3) found locally---------------------"
 fi
 }
 
@@ -164,7 +164,7 @@ rm -f $(ls &packages;/${KERNEL_V%%-*}/* 2>/dev/null | grep -v "$LAT_PACKAGE")
 #Install Nvidia vgpu Driver Package
 if ! modinfo nvidia -0 >/dev/null 2>&amp;1 ; then
   echo
-  echo "-----------------Installing Nvidia Vgpu Driver Package v$(echo $LAT_PACKAGE | cut -d '-' -f2)-------------------"
+  echo "-----------------Installing Nvidia Vgpu Driver Package v$(echo $LAT_PACKAGE | cut -d '-' -f3)-------------------"
   install > /dev/null
   activate
 else
@@ -183,13 +183,13 @@ if [ "$(grep "first_installation=" "&plugin;/settings.cfg" | cut -d '=' -f2)" ==
   /usr/local/emhttp/plugins/dynamix/scripts/notify -e "Nvidia Vgpu Driver" -d "Please go to -> Settings -> nvidia-vgpu-driver Perform Set up"
   sed -i '/first_installation=true/c\first_installation=false' "&plugin;/settings.cfg"
   echo
-  echo "------------Installation of Nvidia vgpu driver v$(echo $LAT_PACKAGE | cut -d '-' -f2) successful----------------"
+  echo "------------Installation of Nvidia vgpu driver v$(echo $LAT_PACKAGE | cut -d '-' -f3) successful----------------"
   echo
   echo "Nvidia Vgpu Driver" -d "Please go to -> Settings -> nvidia-vgpu-driver Perform Set up"
 else
   sed -i '/first_installation=true/c\first_installation=false' "&plugin;/settings.cfg"
   echo
-  echo "--------------Installation of Nvidia vgpu driver v$(echo $LAT_PACKAGE | cut -d '-' -f2) successful--------------"
+  echo "--------------Installation of Nvidia vgpu driver v$(echo $LAT_PACKAGE | cut -d '-' -f3) successful--------------"
 fi
 
 #Check if Plugin Update Helper is downloaded and up-to-date
