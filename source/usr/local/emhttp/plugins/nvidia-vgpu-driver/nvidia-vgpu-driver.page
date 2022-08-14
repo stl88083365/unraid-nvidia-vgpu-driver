@@ -25,6 +25,9 @@ $mdev_list = shell_exec('/usr/local/emhttp/plugins/nvidia-vgpu-driver/include/ex
 //Get UUID
 $uuid_gen = shell_exec('/usr/local/emhttp/plugins/nvidia-vgpu-driver/include/exec.sh get_uuid_gen');
 
+//Get flash id
+$flash_id = shell_exec('/usr/local/emhttp/plugins/nvidia-vgpu-driver/include/exec.sh get_flash_id');
+
 //Read driver versions from '/tmp/nvidia_vgpu_driver'
 error_reporting(E_ALL);
 ini_set('display_errors',1);
@@ -273,6 +276,10 @@ function setFormatButton() {
             <td style="color: #99cc00;"><b><?=`uname -r`?></b></td>
         </tr>
         <tr>
+            <td>Flash ID:</td>
+            <td style="color: #99cc00;"><b><?=`echo $flash_id`?></b></td>
+        </tr>
+        <tr>
         </tr>
     </table>
     <? if (isset($selected_v ) === true && trim($selected_v ) === 'latest' || trim($selected_v ) === 'latest_prb' || trim($selected_v ) === 'latest_nfb'): ?>
@@ -366,7 +373,7 @@ table tbody td {line-height:1.4rem;}
 <link type="text/css" rel="stylesheet" href="<?=autov('/plugins/nvidia-vgpu-driver/styles/switchbutton.css')?>">
 
 <span id='debugging'></span>
-<?tr("Select a file to edit");?>
+<?tr("Select a file to edit: ");?>
 <select class='choosers' id='file' onchange='editfile();'><?=$o?></select> or <input class='choosers' type='text' id="source" name="shareFolder" value="/" data-pickroot="/"><font size='5'><i style='vertical-align:middle;cursor:pointer;' onclick='editfilemanual();' class="fa fa-pencil-square-o" aria-hidden="true"></i></font>  <?tr("note: editing a binary file could have unintended consequences");?><span id='spinner' style='display:none;'><img width='25px' src='/plugins/nvidia-vgpu-driver/images/spinner2.gif'></span>
 <div width:100%;>
 <div class='txtdiv'>

@@ -87,6 +87,9 @@ pcid=$(nvidia-smi --query-gpu=index,name,gpu_bus_id,uuid --format=csv,noheader |
 mdevctl start -u $idgen -p "0000:"$pcid -t nvidia-"${1}"
 }
 
+function get_flash_id(){
+aaa="$(udevadm info -q all -n /dev/sda1 | grep -i by-uuid | head -1)" && echo "${aaa:0-9:9}"
+}
 function change_update_check(){
 sed -i "/update_check=/c\update_check=${1}" "/boot/config/plugins/nvidia-vgpu-driver/settings.cfg"
 if [ "${1}" == "true" ]; then

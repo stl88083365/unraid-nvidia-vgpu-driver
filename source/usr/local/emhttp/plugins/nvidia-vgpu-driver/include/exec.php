@@ -1,4 +1,10 @@
 <?PHP
+#########################################################
+#                                                       #
+# CA Config Editor copyright 2017-2019, Andrew Zawadzki #
+#                                                       #
+#########################################################
+
 $plugin = "nvidia-vgpu-driver";
 $docroot = $docroot ?: $_SERVER['DOCUMENT_ROOT'] ?: '/usr/local/emhttp';
 $translations = file_exists("$docroot/webGui/include/Translations.php");
