@@ -84,13 +84,15 @@ echo -n "$(uuidgen)"
 function get_types_num(){
 idgen=$(uuidgen)
 pcid=$(nvidia-smi --query-gpu=index,name,gpu_bus_id,uuid --format=csv,noheader | tr "," "\n" | sed 's/^[ \t]*//' | sed -e s/00000000://g | sed -n '3p')
-mdevlist_conf=$(mdevctl start -u $idgen -p "0000:"$pcid -t nvidia-"${1}")
+mdevlist_conf=$(mdevctl list | grep "$idgen")
 get_sleep=$(cat /boot/config/nvmdev | grep "sleep")
 if [ ! -n "$get_sleep" ]; then
 	echo "sleep 5" >> /boot/config/nvmdev
-	echo $mdevlist_conf >> /boot/config/nvmdev
+	echo -n "$(mdevctl start -u $idgen -p "0000:"$pcid -t nvidia-"${1}")"
+	echo "$(mdevctl start -u $idgen -p "0000:"$pcid -t nvidia-"${1}")" >> /boot/config/nvmdev
 else
-	echo $mdevlist_conf >> /boot/config/nvmdev
+	echo -n "$(mdevctl start -u $idgen -p "0000:"$pcid -t nvidia-"${1}")"
+	echo "mdevctl start -u $idgen -p 0000:"$pcid" -t nvidia-"${1}"" >> /boot/config/nvmdev
 fi
 echo $$mdevlist_conf
 }
