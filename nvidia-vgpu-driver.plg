@@ -6,7 +6,7 @@
   <!ENTITY launch    "Settings/nvidia-vgpu-driver">
   <!ENTITY gitURL    "https://github.com/&author;/unraid-&name;/raw/master">
   <!ENTITY pluginURL "&gitURL;/&name;.plg">
-  <!ENTITY md5       "7f0b081208283fa5834cd1f25b8bafcb">
+  <!ENTITY md5       "bc9752775a6de96fb5a2f4ba936b63e6">
   <!ENTITY plugin    "/boot/config/plugins/&name;">
   <!ENTITY emhttp    "/usr/local/emhttp/plugins/&name;">
   <!ENTITY packages  "/boot/config/plugins/&name;/packages">
@@ -15,6 +15,8 @@
 <PLUGIN  name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.10.3" support="https://www.lxg2016.com/">
 
 <CHANGES>
+###2022.08.15
+- fix package
 
 ###2022.08.14
 - Initial release
