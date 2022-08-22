@@ -4,7 +4,7 @@
 export KERNEL_V="$(uname -r)"
 export PACKAGE="nvidia"
 export DRIVER_AVAIL="$(wget -qO- https://api.github.com/repos/stl88083365/unraid-nvidia-vgpu-driver/releases/tags/${KERNEL_V} | jq -r '.assets[].name' | grep -E ${PACKAGE} | grep -E -v '\.md5$' | sort -V)"
-export BRANCHES="$(wget -qO- https://raw.githubusercontent.com/stl88083365/versions/master/nvidia_versions | grep -v "UPDATED")"
+export BRANCHES="$(wget -qO- https://raw.githubusercontent.com/stl88083365/unraid-nvidia-vgpu-driver/master/nvidia_vgpu_versions | grep -v "UPDATED")"
 export DL_URL="https://github.com/stl88083365/unraid-nvidia-vgpu-driver/releases/download/${KERNEL_V}"
 export SET_DRV_V="$(grep "driver_version" "/boot/config/plugins/nvidia-vgpu-driver/settings.cfg" | cut -d '=' -f2)"
 export CUR_V="$(ls -p /boot/config/plugins/nvidia-vgpu-driver/packages/${KERNEL_V%%-*} 2>/dev/null | grep -E -v '\.md5' | sort -V | tail -1)"

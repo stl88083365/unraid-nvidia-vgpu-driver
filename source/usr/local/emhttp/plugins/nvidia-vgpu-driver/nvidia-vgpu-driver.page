@@ -54,14 +54,6 @@ function changeVersion(form) {
     }
 </script>
 
-<script>
-function changeVersion(form) {
-    var package = form.drv_version.value;
-    openBox("/usr/local/emhttp/plugins/nvidia-vgpu-driver/include/exec.sh&arg1=update_version&arg2="+package,"Downloading Package",600,800,true);
-    return false;
-    }
-</script>
-
 <?
 $vars = parse_ini_file("/var/local/emhttp/var.ini");
 $toolTipsterAllowed = version_compare($vars['version'],"6.3.3",">=") ? "true" : "false";

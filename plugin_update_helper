@@ -1,0 +1,90 @@
+# Plugin Update Helper by lbxp for unRAID
+# Plugin-Update-Helper version: 2022.08.15
+
+# Nvidia-vGPU-Driver: https://github.com/stl88083365/unraid-nvidia-vgpu-driver  
+
+if [ ! -f /boot/changes.txt ]; then
+  /usr/local/emhttp/plugins/dynamix/scripts/notify -e "Plugin Update Helper" -d "Error: Plugin Update Helper can't start! Can't find file /boot/changes.txt" -i "alert"
+  exit 1
+fi
+while inotifywait -q /boot/changes.txt -e move_self,delete_self,modify >/dev/null 2>&1
+do
+  # Set Variables
+  sleep 2
+  CUR_KERNEL_V="$(uname -r)"
+  NEW_KERNEL_V="$(grep -E -A2 "Linux kernel" /boot/changes.txt | grep -E "version" | awk '{print $3}' | sort -V | tail -1)-Unraid"
+  if [ "${NEW_KERNEL_V}" == "-Unraid" ]; then
+    NEW_KERNEL_V="$(grep -E -A2 "Linux kernel" /boot/changes.txt | grep -E "Unraid" | awk '{print $3}' | sort -V | tail -1)"
+  fi
+  if [ -z "${NEW_KERNEL_V%%-*}" ]; then
+    /usr/local/emhttp/plugins/dynamix/scripts/notify -e "Plugin Update Helper" -d "Something went horrybly wrong, can't fetch new unRAID Kernel version, please reboot your Server and make sure that you have a active Internet connection on boot without any AdBlocking softwar infront of it!"  -i "alert"
+    exit 1
+  fi
+  NEW_UNRAID_V="$(head -2 /boot/changes.txt | grep -E "Version" | awk '{print $3}' | sort -V | tail -1)"
+
+  # Check if Kernel version changed, notify user if so
+  if [ "${CUR_KERNEL_V%%-*}" == "${NEW_KERNEL_V%%-*}" ]; then
+    /usr/local/emhttp/plugins/dynamix/scripts/notify -e "Plugin Update Helper" -d "All plugins are up-to-date for unRAID v${NEW_UNRAID_V}, please reboot!"
+    exit 0
+  elif [ -z "${NEW_KERNEL_V%%-*}" ]; then
+    exit 1
+  else
+      /usr/local/emhttp/plugins/dynamix/scripts/notify -e "Plugin Update Helper" -d "unRAID version change detected, please don't reboot just yet! Download from plugin(s) for new unRAID v${NEW_UNRAID_V} started in background! You will be notified when the download(s) is/are finished!"
+  fi
+
+  if [ -f "/boot/config/plugins/nvidia-vgpu-driver.plg" ]; then
+    PLUGIN_NAME="Nvidia Vgpu Driver"
+    PACKAGE="nvidia"
+    DRIVER_AVAIL="$(wget -qO- https://api.github.com/repos/stl88083365/unraid-nvidia-vgpu-driver/releases/tags/${NEW_KERNEL_V%%-*}-Unraid | jq -r '.assets[].name' | grep "${PACKAGE}" | grep -E -v '\.md5$' | sort -V)"
+    if [ -z "${DRIVER_AVAIL}" ]; then
+      sleep 2
+      DRIVER_AVAIL="$(wget -qO- https://api.github.com/repos/stl88083365/unraid-nvidia-vgpu-driver/releases/tags/${NEW_KERNEL_V%%-*}-Unraid | jq -r '.assets[].name' | grep "${PACKAGE}" | grep -E -v '\.md5$' | sort -V)"
+    fi
+    BRANCHES="$(wget -qO- https://raw.githubusercontent.com/stl88083365/versions/master/nvidia_vgpu_versions | grep -v "UPDATED")"
+    DL_URL="https://github.com/stl88083365/unraid-nvidia-vgpu-driver/releases/download/${NEW_KERNEL_V%%-*}-Unraid"
+    SET_DRV_V="$(grep "driver_version" "/boot/config/plugins/nvidia-vgpu-driver/settings.cfg" | cut -d '=' -f2)"
+
+    if [ "${SET_DRV_V}" == "latest" ]; then
+      LAT_PACKAGE="$(echo "$DRIVER_AVAIL" | tail -1)"
+    elif [ "${SET_DRV_V}" == "latest_prb" ]; then
+      LAT_PRB_AVAIL="$(echo "$BRANCHES" | grep 'PRB' | cut -d '=' -f2 | sort -V)"
+      LAT_PACKAGE="$(comm -12 <(echo "$DRIVER_AVAIL" | cut -d '-' -f2) <(echo "$LAT_PRB_AVAIL") | sort -V | tail -1)"
+      if [ -z "${LAT_PACKAGE}" ]; then
+        LAT_PACKAGE="$(echo "$DRIVER_AVAIL" | tail -1)"
+        sed -i '/driver_version=/c\driver_version=latest' "/boot/config/plugins/nvidia-vgpu-driver/settings.cfg"
+      fi
+    elif [ "${SET_DRV_V}" == "latest_nfb" ]; then
+      LAT_NFB_AVAIL="$(echo "$BRANCHES" | grep 'NFB' | cut -d '=' -f2 | sort -V)"      
+      LAT_PACKAGE="$(comm -12 <(echo "$DRIVER_AVAIL" | cut -d '-' -f2) <(echo "$LAT_NFB_AVAIL") | sort -V | tail -1)"
+      if [ -z "${LAT_PACKAGE}" ]; then
+        LAT_PACKAGE="$(echo "$DRIVER_AVAIL" | tail -1)"
+        sed -i '/driver_version=/c\driver_version=latest' "/boot/config/plugins/nvidia-vgpu-driver/settings.cfg"
+      fi
+    else
+      LAT_PACKAGE="$(echo "$DRIVER_AVAIL" | grep "$SET_DRV_V")"
+      if [ -z "${LAT_PACKAGE}" ]; then
+        LAT_PACKAGE="$(echo "$DRIVER_AVAIL" | tail -1)"
+        sed -i '/driver_version=/c\driver_version=latest' "/boot/config/plugins/nvidia-vgpu-driver/settings.cfg"
+      fi
+    fi
+    mkdir -p "/boot/config/plugins/nvidia-vgpu-driver/packages/${NEW_KERNEL_V%%-*}"
+    if wget -q -nc -O "/boot/config/plugins/nvidia-vgpu-driver/packages/${NEW_KERNEL_V%%-*}/${LAT_PACKAGE}" "${DL_URL}/${LAT_PACKAGE}" ; then
+      wget -q -nc -O "/boot/config/plugins/nvidia-vgpu-driver/packages/${NEW_KERNEL_V%%-*}/${LAT_PACKAGE}.md5" "${DL_URL}/${LAT_PACKAGE}.md5"
+      if [ "$(md5sum /boot/config/plugins/nvidia-vgpu-driver/packages/${NEW_KERNEL_V%%-*}/${LAT_PACKAGE} | awk '{print $1}')" != "$(cat /boot/config/plugins/nvidia-vgpu-driver/packages/${NEW_KERNEL_V%%-*}/${LAT_PACKAGE}.md5 | awk '{print $1}')" ]; then
+        /usr/local/emhttp/plugins/dynamix/scripts/notify -e "Plugin Update Helper" -d "${PLUGIN_NAME} v$(echo $LAT_PACKAGE | cut -d '-' -f2) download failed: Checksum Error!" -i "alert"
+        rm -rf /boot/config/plugins/nvidia-vgpu-driver/packages/${NEW_KERNEL_V%%-*}/${LAT_PACKAGE}*
+      else
+        /usr/local/emhttp/plugins/dynamix/scripts/notify -e "Plugin Update Helper" -d "${PLUGIN_NAME} v$(echo $LAT_PACKAGE | cut -d '-' -f2) download successful!"
+        rm -rf $(ls -d /boot/config/plugins/nvidia-vgpu-driver/packages/* | grep -v "${NEW_KERNEL_V%%-*}")
+        rm -rf $(find /boot/config/plugins/nvidia-vgpu-driver/packages/${NEW_KERNEL_V%%-*}/ -type f -maxdepth 1 | grep -v "${PACKAGE}")
+      fi
+    else
+      /usr/local/emhttp/plugins/dynamix/scripts/notify -e "Plugin Update Helper" -d "${PLUGIN_NAME} v$(echo $LAT_PACKAGE | cut -d '-' -f2) download failed, please go to the support thread for this plugin and make a post with a screenshot from this error!" -i "alert"
+      rm -rf /boot/config/plugins/nvidia-vgpu-driver/packages/${NEW_KERNEL_V%%-*}/${LAT_PACKAGE}*
+    fi
+  fi
+  sleep 2
+  /usr/local/emhttp/plugins/dynamix/scripts/notify -e "Plugin Update Helper" -d "Everything done, please reboot to install unRAID v${NEW_UNRAID_V}!" -l "Main"
+  sleep 2
+  exit 0
+done

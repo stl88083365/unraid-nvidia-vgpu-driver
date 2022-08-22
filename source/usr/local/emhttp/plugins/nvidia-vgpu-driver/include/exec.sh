@@ -25,13 +25,13 @@ if [ -f /tmp/nvidia_branches ]; then
   FILETIME=$(stat /tmp/nvidia_branches -c %Y)
   DIFF=$(expr $CURENTTIME - $FILETIME)
   if [ $DIFF -gt $CHK_TIMEOUT ]; then
-    echo -n "$(wget -q -N -O /tmp/nvidia_branches https://raw.githubusercontent.com/stl88083365/versions/master/nvidia_vgpu_versions)"
+    echo -n "$(wget -q -N -O /tmp/nvidia_branches https://raw.githubusercontent.com/stl88083365/unraid-nvidia-vgpu-driver/master/nvidia_vgpu_versions)"
     if [ ! -s /tmp/nvidia_branches ]; then
       rm -rf /tmp/nvidia_branches
     fi
   fi
 else
-  echo -n "$(wget -q -N -O /tmp/nvidia_branches https://raw.githubusercontent.com/stl88083365/versions/master/nvidia_vgpu_versions)"
+  echo -n "$(wget -q -N -O /tmp/nvidia_branches https://raw.githubusercontent.com/stl88083365/unraid-nvidia-vgpu-driver/master/nvidia_vgpu_versions)"
 fi
 }
 

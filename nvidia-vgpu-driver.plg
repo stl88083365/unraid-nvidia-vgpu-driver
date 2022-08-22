@@ -2,11 +2,11 @@
 <!DOCTYPE PLUGIN [
   <!ENTITY name      "nvidia-vgpu-driver">
   <!ENTITY author    "stl88083365">
-  <!ENTITY version   "2022.08.15">
+  <!ENTITY version   "2022.08.22">
   <!ENTITY launch    "Settings/nvidia-vgpu-driver">
   <!ENTITY gitURL    "https://github.com/&author;/unraid-&name;/raw/master">
   <!ENTITY pluginURL "&gitURL;/&name;.plg">
-  <!ENTITY md5       "bc9752775a6de96fb5a2f4ba936b63e6">
+  <!ENTITY md5       "2cc1efbb00683b1e9cab1ea3623d97f0">
   <!ENTITY plugin    "/boot/config/plugins/&name;">
   <!ENTITY emhttp    "/usr/local/emhttp/plugins/&name;">
   <!ENTITY packages  "/boot/config/plugins/&name;/packages">
@@ -15,6 +15,9 @@
 <PLUGIN  name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.10.3" support="https://www.lxg2016.com/">
 
 <CHANGES>
+###2022.08.22
+- fix package
+
 ###2022.08.15
 - fix package
 
@@ -196,11 +199,11 @@ fi
 
 #Check if Plugin Update Helper is downloaded and up-to-date
 if [ ! -f &plugin;/plugin_update_helper ]; then
-  wget -q -T 5 -O &plugin;/plugin_update_helper "https://raw.githubusercontent.com/stl88083365/unraid-plugin_update_helper/master/plugin_update_helper"
+  wget -q -T 5 -O &plugin;/plugin_update_helper "https://raw.githubusercontent.com/stl88083365/unraid-nvidia-vgpu-driver/master/plugin_update_helper"
 else
   CUR_V="$(grep -E "Plugin-Update-Helper version:" &plugin;/plugin_update_helper | awk '{print $4}')"
   if [ ! -s /tmp/update-helper ]; then
-    echo "$(wget -T5 -qO- https://raw.githubusercontent.com/stl88083365/unraid-plugin_update_helper/master/plugin_update_helper | grep -E "Plugin-Update-Helper version:" | awk '{print $4}')" > /tmp/update-helper
+    echo "$(wget -T5 -qO- https://raw.githubusercontent.com/stl88083365/unraid-nvidia-vgpu-driver/master/plugin_update_helper | grep -E "Plugin-Update-Helper version:" | awk '{print $4}')" > /tmp/update-helper
     AVAIL_V="$(cat /tmp/update-helper)"
   else
     AVAIL_V="$(cat /tmp/update-helper)"
@@ -208,7 +211,7 @@ else
   if [ ! -z "$AVAIL_V" ]; then
     COMPARE="$(sort -V &lt;(echo -e "${AVAIL_V}\n$CUR_V") | tail -1)"
     if [ "$CUR_V" != "$COMPARE" ]; then
-      wget -q -T 5 -O &plugin;/plugin_update_helper "https://raw.githubusercontent.com/stl88083365/unraid-plugin_update_helper/master/plugin_update_helper"
+      wget -q -T 5 -O &plugin;/plugin_update_helper "https://raw.githubusercontent.com/stl88083365/unraid-nvidia-vgpu-driver/master/plugin_update_helper"
     fi
   fi
 fi
