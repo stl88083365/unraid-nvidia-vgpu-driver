@@ -21,17 +21,17 @@ if wget -q -nc --show-progress --progress=bar:force:noscroll -O "/boot/config/pl
     exit 1
   fi
   echo
-  echo "-----------Successfully downloaded Nvidia vGPU Driver Package v$(echo $LAT_PACKAGE | cut -d '-' -f2)-----------"
+  echo "-----------Successfully downloaded Nvidia vGPU Driver Package v$(echo $LAT_PACKAGE | cut -d '-' -f3)-----------"
 else
   echo
-  echo "---------------Can't download Nvidia vGPU Driver Package v$(echo $LAT_PACKAGE | cut -d '-' -f2)----------------"
+  echo "---------------Can't download Nvidia vGPU Driver Package v$(echo $LAT_PACKAGE | cut -d '-' -f3)----------------"
   exit 1
 fi
 }
 
 #Check if driver is already downloaded
 check() {
-if ! ls -1 /boot/config/plugins/nvidia-vgpu-driver/packages/${KERNEL_V%%-*}/ | grep -q "${PACKAGE}-$(echo $LAT_PACKAGE | cut -d '-' -f2)" ; then
+if ! ls -1 /boot/config/plugins/nvidia-vgpu-driver/packages/${KERNEL_V%%-*}/ | grep -q "${PACKAGE}-$(echo $LAT_PACKAGE | cut -d '-' -f3)" ; then
   echo
   echo "+=============================================================================="
   echo "| WARNING - WARNING - WARNING - WARNING - WARNING - WARNING - WARNING - WARNING"
@@ -41,12 +41,12 @@ if ! ls -1 /boot/config/plugins/nvidia-vgpu-driver/packages/${KERNEL_V%%-*}/ | g
   echo "| WARNING - WARNING - WARNING - WARNING - WARNING - WARNING - WARNING - WARNING"
   echo "+=============================================================================="
   echo
-  echo "----------------Downloading Nvidia vGPU Driver Package v$(echo $LAT_PACKAGE | cut -d '-' -f2)-----------------"
+  echo "----------------Downloading Nvidia vGPU Driver Package v$(echo $LAT_PACKAGE | cut -d '-' -f3)-----------------"
   echo "---------This could take some time, please don't close this window!------------"
   download
 else
   echo
-  echo "---------Noting to do, Nvidia vGPU Drivers v$(echo $LAT_PACKAGE | cut -d '-' -f2) already downloaded!---------"
+  echo "---------Noting to do, Nvidia vGPU Drivers v$(echo $LAT_PACKAGE | cut -d '-' -f3) already downloaded!---------"
   echo
   echo "------------------------------Verifying CHECKSUM!------------------------------"
   if [ "$(md5sum /boot/config/plugins/nvidia-vgpu-driver/packages/${KERNEL_V%%-*}/${LAT_PACKAGE} | awk '{print $1}')" != "$(cat /boot/config/plugins/nvidia-vgpu-driver/packages/${KERNEL_V%%-*}/${LAT_PACKAGE}.md5 | awk '{print $1}')" ]; then
@@ -55,7 +55,7 @@ else
     echo "-----ERROR - ERROR - ERROR - ERROR - ERROR - ERROR - ERROR - ERROR - ERROR-----"
     echo "--------------------------------CHECKSUM ERROR!--------------------------------"
     echo
-    echo "---------------Trying to redownload the Nvidia Vgpu Driver v$(echo $LAT_PACKAGE | cut -d '-' -f2)-------------"
+    echo "---------------Trying to redownload the Nvidia Vgpu Driver v$(echo $LAT_PACKAGE | cut -d '-' -f3)-------------"
     echo
     echo "+=============================================================================="
     echo "| WARNING - WARNING - WARNING - WARNING - WARNING - WARNING - WARNING - WARNING"
@@ -92,7 +92,7 @@ if [ "${SET_DRV_V}" == "latest" ]; then
     fi
   fi
 elif [ "${SET_DRV_V}" == "latest_prb" ]; then
-  LAT_PRB_AVAIL="$(echo "$BRANCHES" | grep 'PRB' | cut -d '=' -f2 | sort -V)"
+  LAT_PRB_AVAIL="$(echo "$BRANCHES" | grep 'PRB' | cut -d '=' -f3 | sort -V)"
   if [ -z "$LAT_PRB_AVAIL" ]; then
     if [ -z "${CUR_V}" ]; then
       echo
@@ -116,7 +116,7 @@ elif [ "${SET_DRV_V}" == "latest_prb" ]; then
       LAT_PACKAGE=$CUR_V
     fi
   else
-    if [ -z "$(comm -12 <(echo "$DRIVER_AVAIL" | cut -d '-' -f2) <(echo "$LAT_PRB_AVAIL") | sort -V | tail -1)" ]; then
+    if [ -z "$(comm -12 <(echo "$DRIVER_AVAIL" | cut -d '-' -f3) <(echo "$LAT_PRB_AVAIL") | sort -V | tail -1)" ]; then
       if [ -z "${CUR_V}" ]; then
         echo
         echo "-----ERROR - ERROR - ERROR - ERROR - ERROR - ERROR - ERROR - ERROR - ERROR------"
@@ -126,7 +126,7 @@ elif [ "${SET_DRV_V}" == "latest_prb" ]; then
         exit 1
       else
         LAT_PACKAGE="$(echo "$DRIVER_AVAIL" | tail -1)"
-        echo "---Can't find Nvidia vGPU Driver v${SET_DRV_V} for your Kernel v${KERNEL_V%%-*} falling back to latest Nvidia vGPU Driver v$(echo $LAT_PACKAGE | cut -d '-' -f2)---"
+        echo "---Can't find Nvidia vGPU Driver v${SET_DRV_V} for your Kernel v${KERNEL_V%%-*} falling back to latest Nvidia vGPU Driver v$(echo $LAT_PACKAGE | cut -d '-' -f3)---"
         sed -i '/driver_version=/c\driver_version=latest' "/boot/config/plugins/nvidia-vgpu-driver/settings.cfg"
       fi
     else
@@ -134,7 +134,7 @@ elif [ "${SET_DRV_V}" == "latest_prb" ]; then
     fi
   fi
 elif [ "${SET_DRV_V}" == "latest_nfb" ]; then
-  LAT_NFB_AVAIL="$(echo "$BRANCHES" | grep 'NFB' | cut -d '=' -f2 | sort -V)"
+  LAT_NFB_AVAIL="$(echo "$BRANCHES" | grep 'NFB' | cut -d '=' -f3 | sort -V)"
   if [ -z "$LAT_NFB_AVAIL" ]; then
     if [ -z "${CUR_V}" ]; then
       echo
@@ -158,7 +158,7 @@ elif [ "${SET_DRV_V}" == "latest_nfb" ]; then
       LAT_PACKAGE=$CUR_V
     fi
   else
-    if [ -z "$(comm -12 <(echo "$DRIVER_AVAIL" | cut -d '-' -f2) <(echo "$LAT_NFB_AVAIL") | sort -V | tail -1)" ]; then
+    if [ -z "$(comm -12 <(echo "$DRIVER_AVAIL" | cut -d '-' -f3) <(echo "$LAT_NFB_AVAIL") | sort -V | tail -1)" ]; then
       if [ -z "${CUR_V}" ]; then
         echo
         echo "-----ERROR - ERROR - ERROR - ERROR - ERROR - ERROR - ERROR - ERROR - ERROR------"
@@ -168,7 +168,7 @@ elif [ "${SET_DRV_V}" == "latest_nfb" ]; then
         exit 1
       else
         LAT_PACKAGE="$(echo "$DRIVER_AVAIL" | tail -1)"
-        echo "---Can't find Nvidia vGPU Driver v${SET_DRV_V} for your Kernel v${KERNEL_V%%-*} falling back to latest Nvidia vGPU Driver v$(echo $LAT_PACKAGE | cut -d '-' -f2)---"
+        echo "---Can't find Nvidia vGPU Driver v${SET_DRV_V} for your Kernel v${KERNEL_V%%-*} falling back to latest Nvidia vGPU Driver v$(echo $LAT_PACKAGE | cut -d '-' -f3)---"
         sed -i '/driver_version=/c\driver_version=latest' "/boot/config/plugins/nvidia-vgpu-driver/settings.cfg"
       fi
     else
@@ -192,7 +192,7 @@ else
     if [ -z "${LAT_PACKAGE}" ]; then
       export LAT_PACKAGE="$(echo "$DRIVER_AVAIL" | tail -1)"
       echo
-      echo "---Can't find Nvidia vGPU Driver v${SET_DRV_V} for your Kernel v${KERNEL_V%%-*} falling back to latest Nvidia vGPU Driver v$(echo $LAT_PACKAGE | cut -d '-' -f2)---"
+      echo "---Can't find Nvidia vGPU Driver v${SET_DRV_V} for your Kernel v${KERNEL_V%%-*} falling back to latest Nvidia vGPU Driver v$(echo $LAT_PACKAGE | cut -d '-' -f3)---"
       sed -i '/driver_version=/c\driver_version=latest' "/boot/config/plugins/nvidia-vgpu-driver/settings.cfg"
     fi
   fi
@@ -207,5 +207,5 @@ rm -f $(ls /boot/config/plugins/nvidia-vgpu-driver/packages/${KERNEL_V%%-*}/* 2>
 
 #Display message to reboot server both in Plugin and WebUI
 echo
-echo "----To install the new Nvidia vGPU Driver v$(echo $LAT_PACKAGE | cut -d '-' -f2) please reboot your Server!----"
-/usr/local/emhttp/plugins/dynamix/scripts/notify -e "Nvidia vGPU Driver" -d "To install the new Nvidia vGPU Driver v$(echo $LAT_PACKAGE | cut -d '-' -f2) please reboot your Server!" -i "alert" -l "/Main"
+echo "----To install the new Nvidia vGPU Driver v$(echo $LAT_PACKAGE | cut -d '-' -f3) please reboot your Server!----"
+/usr/local/emhttp/plugins/dynamix/scripts/notify -e "Nvidia vGPU Driver" -d "To install the new Nvidia vGPU Driver v$(echo $LAT_PACKAGE | cut -d '-' -f3) please reboot your Server!" -i "alert" -l "/Main"

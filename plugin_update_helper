@@ -1,7 +1,7 @@
 # Plugin Update Helper by lbxp for unRAID
 # Plugin-Update-Helper version: 2022.08.15
 
-# Nvidia-vGPU-Driver: https://github.com/stl88083365/unraid-nvidia-vgpu-driver  
+# Nvidia-vGPU-Driver: https://github.com/stl88083365/unraid-nvidia-vgpu-driver
 
 if [ ! -f /boot/changes.txt ]; then
   /usr/local/emhttp/plugins/dynamix/scripts/notify -e "Plugin Update Helper" -d "Error: Plugin Update Helper can't start! Can't find file /boot/changes.txt" -i "alert"
