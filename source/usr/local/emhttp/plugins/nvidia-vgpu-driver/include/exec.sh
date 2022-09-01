@@ -3,7 +3,6 @@
 function update(){
 KERNEL_V="$(uname -r)"
 PACKAGE="nvidia"
-vgpu_V="515.57"
 CURENTTIME=$(date +%s)
 CHK_TIMEOUT=300
 if [ -f /tmp/nvidia_vgpu_driver ]; then

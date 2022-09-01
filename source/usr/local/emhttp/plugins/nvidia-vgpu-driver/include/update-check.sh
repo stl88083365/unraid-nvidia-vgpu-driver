@@ -1,7 +1,7 @@
 #!/bin/bash
 KERNEL_V="$(uname -r)"
 PACKAGE="nvidia"
-SET_DRV_V="$(cat /boot/config/plugins/nvidia-driver/settings.cfg | grep "driver_version" | cut -d '=' -f2)"
+SET_DRV_V="$(cat /boot/config/plugins/nvidia-vgpu-driver/settings.cfg | grep "driver_version" | cut -d '=' -f2)"
 INSTALLED_V="$(nvidia-smi | grep NVIDIA-SMI | cut -d ' ' -f3)"
 
 download() {
