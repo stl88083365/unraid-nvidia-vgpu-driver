@@ -203,41 +203,6 @@ else
   echo "--------------Installation of Nvidia vgpu driver v$(echo $LAT_PACKAGE | cut -d '-' -f3) successful--------------"
 fi
 
-#Check if Plugin Update Helper is downloaded and up-to-date
-if [ ! -f &plugin;/plugin_update_helper ]; then
-  wget -q -T 5 -O &plugin;/plugin_update_helper "https://raw.githubusercontent.com/stl88083365/unraid-nvidia-vgpu-driver/master/plugin_update_helper"
-else
-  CUR_V="$(grep -E "Plugin-Update-Helper version:" &plugin;/plugin_update_helper | awk '{print $4}')"
-  if [ ! -s /tmp/update-helper ]; then
-    echo "$(wget -T5 -qO- https://raw.githubusercontent.com/stl88083365/unraid-nvidia-vgpu-driver/master/plugin_update_helper | grep -E "Plugin-Update-Helper version:" | awk '{print $4}')" > /tmp/update-helper
-    AVAIL_V="$(cat /tmp/update-helper)"
-  else
-    AVAIL_V="$(cat /tmp/update-helper)"
-  fi
-  if [ ! -z "$AVAIL_V" ]; then
-    COMPARE="$(sort -V &lt;(echo -e "${AVAIL_V}\n$CUR_V") | tail -1)"
-    if [ "$CUR_V" != "$COMPARE" ]; then
-      wget -q -T 5 -O &plugin;/plugin_update_helper "https://raw.githubusercontent.com/stl88083365/unraid-nvidia-vgpu-driver/master/plugin_update_helper"
-    fi
-  fi
-fi
-
-#Check if Plugin Update Helper is installed and up to date
-if [ ! -f /usr/bin/plugin_update_helper ]; then
-  cp &plugin;/plugin_update_helper /usr/bin/plugin_update_helper
-  chmod +x /usr/bin/plugin_update_helper
-else
-  PLUGIN_V="$(grep -E "Plugin-Update-Helper version:" &plugin;/plugin_update_helper | awk '{print $4}')"
-  INST_V="$(grep -E "Plugin-Update-Helper version:" /usr/bin/plugin_update_helper | awk '{print $4}')"
-  COMPARE="$(sort -V &lt;(echo -e "${PLUGIN_V}\n$INST_V") | tail -1)"
-  if [ "$INST_V" != "$COMPARE" ]; then
-    kill $(ps aux | grep -E "inotifywait -q /boot/changes.txt -e move_self,delete_self" | grep -v "grep -E inotifywait" | awk '{print $2}') 2>/dev/null
-    sleep 1
-    cp &plugin;/plugin_update_helper /usr/bin/plugin_update_helper
-    chmod +x /usr/bin/plugin_update_helper
-  fi
-fi
-
 #Start Plugin Update Helper
 if [ -z "$(ps aux | grep -E "inotifywait -q /boot/changes.txt -e move_self,delete_self" | grep -v "grep -E inotifywait" | awk '{print $2}')" ]; then
   echo "/usr/bin/plugin_update_helper" | at now -M &gt; /dev/null 2&gt;&amp;1
