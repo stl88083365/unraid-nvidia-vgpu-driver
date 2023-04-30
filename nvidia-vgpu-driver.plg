@@ -12,9 +12,12 @@
   <!ENTITY packages  "/boot/config/plugins/&name;/packages">
 ]>
 
-<PLUGIN  name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.10.3" support="https://www.lxg2016.com/">
+<PLUGIN  name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.11.5" support="https://www.lxg2016.com/">
 
 <CHANGES>
+###2023.04.30
+- Re-enable nvidia-vgpu driver plugin
+
 ###2022.09.01
 - fix package
 
@@ -117,8 +120,8 @@ fi
 #Install driver package
 install() {
 /sbin/installpkg "&packages;/${KERNEL_V%%-*}/${PACKAGE}*.txz"
-## depmod >> /dev/null
-## modprobe nvidia  >> /dev/null
+depmod -a >> /dev/null
+nvidia-modprobe  >> /dev/null
 }
 
 activate() {

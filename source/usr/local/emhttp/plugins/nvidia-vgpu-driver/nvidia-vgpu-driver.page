@@ -12,10 +12,6 @@ shell_exec('/usr/local/emhttp/plugins/nvidia-vgpu-driver/include/exec.sh update'
 //Get latest version
 $latest_v = shell_exec('/usr/local/emhttp/plugins/nvidia-vgpu-driver/include/exec.sh get_latest_version');
 
-//Get branch versions
-//$latest_prb_v = shell_exec('/usr/local/emhttp/plugins/nvidia-vgpu-driver/include/exec.sh get_prb');
-//$latest_nfb_v = shell_exec('/usr/local/emhttp/plugins/nvidia-vgpu-driver/include/exec.sh get_nfb');
-
 //Get current installed driver version
 $installed_v = shell_exec('/usr/local/emhttp/plugins/nvidia-vgpu-driver/include/exec.sh get_installed_version');
 
@@ -24,9 +20,6 @@ $mdev_list = shell_exec('/usr/local/emhttp/plugins/nvidia-vgpu-driver/include/ex
 
 //Get UUID
 $uuid_gen = shell_exec('/usr/local/emhttp/plugins/nvidia-vgpu-driver/include/exec.sh get_uuid_gen');
-
-//Get flash id
-$flash_id = shell_exec('/usr/local/emhttp/plugins/nvidia-vgpu-driver/include/exec.sh get_flash_id');
 
 //Read driver versions from '/tmp/nvidia_vgpu_driver'
 error_reporting(E_ALL);
@@ -268,13 +261,9 @@ function setFormatButton() {
             <td style="color: #99cc00;"><b><?=`uname -r`?></b></td>
         </tr>
         <tr>
-            <td>Flash ID:</td>
-            <td style="color: #99cc00;"><b><?=`echo $flash_id`?></b></td>
-        </tr>
-        <tr>
         </tr>
     </table>
-    <? if (isset($selected_v ) === true && trim($selected_v ) === 'latest' || trim($selected_v ) === 'latest_prb' || trim($selected_v ) === 'latest_nfb'): ?>
+    <? if (isset($selected_v ) === true && trim($selected_v ) === 'latest'): ?>
     <div id="title">
         <span class="left"></span>
     </div>
