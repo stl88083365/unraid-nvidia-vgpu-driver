@@ -2,11 +2,11 @@
 <!DOCTYPE PLUGIN [
   <!ENTITY name      "nvidia-vgpu-driver">
   <!ENTITY author    "stl88083365">
-  <!ENTITY version   "2022.09.01">
+  <!ENTITY version   "2023.04.30">
   <!ENTITY launch    "Settings/nvidia-vgpu-driver">
   <!ENTITY gitURL    "https://github.com/&author;/unraid-&name;/raw/master">
   <!ENTITY pluginURL "&gitURL;/&name;.plg">
-  <!ENTITY md5       "a0cbe36a3a738dbc93147230a1b20dcb">
+  <!ENTITY md5       "e9030b71142f3508c9507ec70e4dd21e">
   <!ENTITY plugin    "/boot/config/plugins/&name;">
   <!ENTITY emhttp    "/usr/local/emhttp/plugins/&name;">
   <!ENTITY packages  "/boot/config/plugins/&name;/packages">
