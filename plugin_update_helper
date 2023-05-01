@@ -46,20 +46,6 @@ do
 
     if [ "${SET_DRV_V}" == "latest" ]; then
       LAT_PACKAGE="$(echo "$DRIVER_AVAIL" | tail -1)"
-    elif [ "${SET_DRV_V}" == "latest_prb" ]; then
-      LAT_PRB_AVAIL="$(echo "$BRANCHES" | grep 'PRB' | cut -d '=' -f2 | sort -V)"
-      LAT_PACKAGE="$(comm -12 <(echo "$DRIVER_AVAIL" | cut -d '-' -f2) <(echo "$LAT_PRB_AVAIL") | sort -V | tail -1)"
-      if [ -z "${LAT_PACKAGE}" ]; then
-        LAT_PACKAGE="$(echo "$DRIVER_AVAIL" | tail -1)"
-        sed -i '/driver_version=/c\driver_version=latest' "/boot/config/plugins/nvidia-vgpu-driver/settings.cfg"
-      fi
-    elif [ "${SET_DRV_V}" == "latest_nfb" ]; then
-      LAT_NFB_AVAIL="$(echo "$BRANCHES" | grep 'NFB' | cut -d '=' -f2 | sort -V)"      
-      LAT_PACKAGE="$(comm -12 <(echo "$DRIVER_AVAIL" | cut -d '-' -f2) <(echo "$LAT_NFB_AVAIL") | sort -V | tail -1)"
-      if [ -z "${LAT_PACKAGE}" ]; then
-        LAT_PACKAGE="$(echo "$DRIVER_AVAIL" | tail -1)"
-        sed -i '/driver_version=/c\driver_version=latest' "/boot/config/plugins/nvidia-vgpu-driver/settings.cfg"
-      fi
     else
       LAT_PACKAGE="$(echo "$DRIVER_AVAIL" | grep "$SET_DRV_V")"
       if [ -z "${LAT_PACKAGE}" ]; then

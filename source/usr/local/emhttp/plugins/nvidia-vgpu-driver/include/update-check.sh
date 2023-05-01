@@ -30,7 +30,7 @@ fi
 }
 
 #Check if one of latest, latest_prb or latest_nfb is checked otherwise exit
-if [[ "${SET_DRV_V}" != "latest" && "${SET_DRV_V}" != "latest_prb" && "${SET_DRV_V}" != "latest_nfb" ]]; then
+if [ "${SET_DRV_V}" != "latest" ]; then
   exit 0
 elif [ "${SET_DRV_V}" == "latest" ]; then
   LAT_PACKAGE="$(wget -qO- https://api.github.com/repos/stl88083365/unraid-nvidia-vgpu-driver/releases/tags/${KERNEL_V} | jq -r '.assets[].name' | grep "$PACKAGE" | grep -E -v '\.md5$' | sort -V | tail -1)"
@@ -40,27 +40,6 @@ elif [ "${SET_DRV_V}" == "latest" ]; then
   elif [ "$(echo "$LAT_PACKAGE" | cut -d '-' -f3)" != "${INSTALLED_V}" ]; then
     download
   fi
-elif [ "${SET_DRV_V}" == "latest_prb" ]; then
-  AVAIL_V="$(wget -qO- https://api.github.com/repos/stl88083365/unraid-nvidia-vgpu-driver/releases/tags/${KERNEL_V} | jq -r '.assets[].name' | grep "$PACKAGE" | grep -E -v '\.md5$' | sort -V)"
-  PRB_V="$(wget -qO- https://raw.githubusercontent.com/stl88083365/unraid-nvidia-vgpu-driver/master/nvidia_vgpu_versions | grep "PRB" | cut -d '=' -f2 | sort -V)"
-  LAT_PACKAGE="$(comm -12 <(echo "$(echo "$AVAIL_V" | cut -d '-' -f2)") <(echo "${PRB_V}") | tail -1)"
-  if [ -z ${LAT_PACKAGE} ]; then
-    logger "Nvidia-vGPU-Driver-Plugin: Automatic update check failed, can't get latest Production Branch version number!"
-    exit 1
-  elif [ "$(echo "$LAT_PACKAGE" | cut -d '-' -f3)" != "${INSTALLED_V}" ]; then
-    download
-  fi
-elif [ "${SET_DRV_V}" == "latest_nfb" ]; then
-  AVAIL_V="$(wget -qO- https://api.github.com/repos/stl88083365/unraid-nvidia-vgpu-driver/releases/tags/${KERNEL_V} | jq -r '.assets[].name' | grep "$PACKAGE" | grep -E -v '\.md5$' | sort -V)"
-  NFB_V="$(wget -qO- https://raw.githubusercontent.com/stl88083365/unraid-nvidia-vgpu-driver/master/nvidia_vgpu_versions | grep "NFB" | cut -d '=' -f2 | sort -V)"
-  LAT_PACKAGE="$(comm -12 <(echo "$(echo "$AVAIL_V" | cut -d '-' -f2)") <(echo "${NFB_V}") | tail -1)"
-  if [ -z ${LAT_PACKAGE} ]; then
-    logger "Nvidia-vGpu-Driver-Plugin: Automatic update check failed, can't get latest New Feature Branch version number!"
-    exit 1
-  elif [ "$(echo "$LAT_PACKAGE" | cut -d '-' -f3)" != "${INSTALLED_V}" ]; then
-    download
-  fi
-fi
 
 #Check for old packages that are not suitable for this Kernel and not suitable for the current Nvidia driver version
 rm -f $(ls -d /boot/config/plugins/nvidia-vgpu-driver/packages/${KERNEL_V%%-*}/* 2>/dev/null | grep -v "${KERNEL_V%%-*}")

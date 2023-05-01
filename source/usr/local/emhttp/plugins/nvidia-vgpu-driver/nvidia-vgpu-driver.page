@@ -18,9 +18,6 @@ $installed_v = shell_exec('/usr/local/emhttp/plugins/nvidia-vgpu-driver/include/
 //Get mdevctl list
 $mdev_list = shell_exec('/usr/local/emhttp/plugins/nvidia-vgpu-driver/include/exec.sh get_mdev_list');
 
-//Get UUID
-$uuid_gen = shell_exec('/usr/local/emhttp/plugins/nvidia-vgpu-driver/include/exec.sh get_uuid_gen');
-
 //Read driver versions from '/tmp/nvidia_vgpu_driver'
 error_reporting(E_ALL);
 ini_set('display_errors',1);
@@ -214,19 +211,9 @@ function setFormatButton() {
 				<? if (trim($mdev_list ) !== ''): ?>
 					<td style="color:green"><b><?=`mdevctl list | sed 's/$/<br>/'`?></b></td>				
 				<? else: ?>
-					<td>Please create Mdev List!!!</td>
+					<td style="color:red">Cannot get MDEV LIST !</td>
 				<? endif; ?>
         </tr>
-		<tr>
-		<td>Create Mdevctl List:</td>
-		<td><form action='' method="post" >
-				<table class="settings">	
-								<td>nvidia-<input type="text" name="post_mdevID" size="3" style="width:100px;height:26px;" required></td>
-								<td><input type="submit" name="mdevLISTcheck" value="Mdevctl Add List"></td>
-				</table>
-			</form>
-		</td>	
-		</tr>	
     </table>
 </div>
 
@@ -263,78 +250,6 @@ function setFormatButton() {
         <tr>
         </tr>
     </table>
-    <? if (isset($selected_v ) === true && trim($selected_v ) === 'latest'): ?>
-    <div id="title">
-        <span class="left"></span>
-    </div>
-    	<table class="settings">
-		<tr><td>
-		<b><font size="+1">Driver Update Notification</font></b>
-		</td></tr>
-		<tr><td>
-		<form id="s" method="post" >
-		<select name="updata_check_selected" required>
-                    <option <?php echo ( $update_check == "true") ? 'selected="selected"' : '' ?> value="true"> Enabled</option>
-                    <option <?php echo ( $update_check == "false") ? 'selected="selected"' : '' ?> value="false"> Disabled</option>
-                </select>
-                <input type="submit" name="changeUPDcheck" value="Change">
-                </form>
-                </td>
-                <tr><td><p>The Driver Update Notification, checks once a day (between 8 am and 10 am) whether a new version of the selected branch is available and, if necessary, downloads the new driver and sends a notification.</p>
-			<p><b>The server has to be restarted in order to install the new driver.</b></p>
-		</tr></td>
-	</table>
-     <? endif; ?>
-	    <div id="title">
-        <span class="lift"></span>
-    </div>
-    <table class="settings">
-        <tr>
-            <b><font size="+1">Select preferred driver version:</font></b>
-        </tr>
-        <tr>            
-            <form id="s" method="post" >
-            	<table class="settings">
-            	<tr>
-                <td><b>Latest Versions:</b></td>
-                <td>
-					<? if (isset($latest_v ) === true && trim($latest_v ) !== ''): ?>
-                    <p><input type="radio" name="drv_version" value="latest" <?php echo ( $selected_v == "latest") ? 'checked="checked"' : ''; ?><font color = "green"><b>Latest</font>:</b> <?php echo "v$latest_v"; ?> </p>
-                    <? else: ?>
-                    <p><b><font color = "green">Latest</font>:</b> <i>Not found for this unRAID version!</i></p>
-                    <? endif; ?>
-                </td>
-                </tr>
-                </table>
-                <table class="settings">
-                <tr>
-                <td><b>Available Versions:</b></td><td>
-                    <?php
-                    krsort($eachlines);
-                    foreach($eachlines as $lines){
-                    $arr = explode(" ", $lines);
-                    $lines2 = implode(" ", $arr);
-					?>
-                    <p>
-						<input type="radio" name="drv_version" value="<?php echo $lines2;?>" <?php echo ( $selected_v == $lines2) ? 'checked="checked"' : '' ?>/> 
-						v<?php echo $lines2;?>
-					</p>
-                    <?php
-					}
-                    ?>
-                </td>
-            </tr>
-            
-            <tr>
-                <td>
-                </td>
-                <td>
-                    <input type="button" value="Update & Download" onclick="changeVersion(this.form)">
-                </td>
-            </tr>
-            </form>
-            </table>
-</div>
 
 <div style="width: 50%; float:left">
     <div id="title">
@@ -380,14 +295,6 @@ table tbody td {line-height:1.4rem;}
 if(isset($_POST['changeUPDcheck'])) {
 $updata_check_selected = $_POST["updata_check_selected"];
 shell_exec("/usr/local/emhttp/plugins/nvidia-vgpu-driver/include/exec.sh change_update_check ".escapeshellarg($updata_check_selected)."");
-echo '<script>parent.window.location.reload();</script>';
-}
-?>
-
-<?php
-if(!empty($_POST['mdevLISTcheck'])){
-$post_mdevID = $_POST['post_mdevID'];
-shell_exec("/usr/local/emhttp/plugins/nvidia-vgpu-driver/include/exec.sh get_types_num ".escapeshellarg($post_mdevID)."");
 echo '<script>parent.window.location.reload();</script>';
 }
 ?>
