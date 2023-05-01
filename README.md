@@ -9,6 +9,10 @@
 #!/bin/bash
 # set -x
 
+# Load drivers 
+depmod -a
+nvidia-modprobe
+
 ## Modify the following variables to suit your environment
 WIN="2b6976dd-8620-49de-8d8d-ae9ba47a50db"
 UBU="5fd6286d-06ac-4406-8b06-f26511c260d3"
@@ -66,6 +70,7 @@ mdevctl list
 ```
 
 - 4.Set the script to run when booting the array
+- 5.Create the nvidia.conf file in the /boot/config/modprobe.d directory and add the content "options nvidia cudahost=1"
 
 ### Credits
 - Thanks to the discord user @mbuchel for the experimental patches
