@@ -1,11 +1,11 @@
 # Unraid Nvidia vGPU Driver plugin
 
-This is the repository for the Unraid Nvidia vGPU Driver plugin.
-1.Install 'user scripts' in the unraid app store
-2.Create a new run script. (Name customization)
-3.Newly created script content
------------------------------------------------------
+- This is the repository for the Unraid Nvidia vGPU Driver plugin.
+- 1.Install 'user scripts' in the unraid app store
+- 2.Create a new run script. (Name customization)
+- 3.Newly created script content
 
+```shell
 #!/bin/bash
 # set -x
 
@@ -63,10 +63,9 @@ done
 
 echo " [i] Currently defined mdev devices:"
 mdevctl list
+```
 
------------------------------------------------------------
-
-4.Set the script to run when booting the array
+- 4.Set the script to run when booting the array
 
 ### Credits
 - Thanks to the discord user @mbuchel for the experimental patches
