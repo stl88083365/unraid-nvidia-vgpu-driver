@@ -4,7 +4,7 @@ Icon="nvidia-driver.png"
 ---
 <?php
 //Get selected driver version
-$selected_v = shell_exec("/usr/local/emhttp/plugins/nvidia-vgpu-driver/include/exec.sh get_selected_version");
+//$selected_v = shell_exec("/usr/local/emhttp/plugins/nvidia-vgpu-driver/include/exec.sh get_selected_version");
 
 //Update driver versions and create file '/tmp/nvidia_vgpu_driver'
 shell_exec('/usr/local/emhttp/plugins/nvidia-vgpu-driver/include/exec.sh update');
@@ -208,7 +208,7 @@ function setFormatButton() {
 
         <tr>
             <td>Mdevctl List:</td>
-				<? if (trim($mdev_list ) !== ''): ?>
+				<? if ($mdev_list !== ''): ?>
 					<td style="color:green"><b><?=`mdevctl list | sed 's/$/<br>/'`?></b></td>				
 				<? else: ?>
 					<td style="color:red">Cannot get MDEV LIST !</td>
@@ -250,6 +250,7 @@ function setFormatButton() {
         <tr>
         </tr>
     </table>
+  </div>
 
 <div style="width: 50%; float:left">
     <div id="title">
