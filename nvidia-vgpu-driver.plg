@@ -2,11 +2,11 @@
 <!DOCTYPE PLUGIN [
   <!ENTITY name      "nvidia-vgpu-driver">
   <!ENTITY author    "stl88083365">
-  <!ENTITY version   "2023.04.30">
+  <!ENTITY version   "2023.05.01">
   <!ENTITY launch    "Settings/nvidia-vgpu-driver">
   <!ENTITY gitURL    "https://github.com/&author;/unraid-&name;/raw/master">
   <!ENTITY pluginURL "&gitURL;/&name;.plg">
-  <!ENTITY md5       "f9c99d3b4b5af4ca6b52dcd04d58e50e">
+  <!ENTITY md5       "200ab64c93feb2f8211d039485a14fb7">
   <!ENTITY plugin    "/boot/config/plugins/&name;">
   <!ENTITY emhttp    "/usr/local/emhttp/plugins/&name;">
   <!ENTITY packages  "/boot/config/plugins/&name;/packages">
@@ -15,6 +15,9 @@
 <PLUGIN  name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" min="6.11.5" support="https://www.lxg2016.com/">
 
 <CHANGES>
+###2023.05.01
+- The code is being modified and is currently incomplete
+
 ###2023.04.30
 - Re-enable nvidia-vgpu driver plugin
 
