@@ -1,5 +1,6 @@
 # Unraid Nvidia vGPU Driver plugin
-
+- Able big brother can also help to perfect this plug-in.
+- If you have any questions, you can join the QQ group: 263813094
 - This is the repository for the Unraid Nvidia vGPU Driver plugin.
 - 1.Install 'user scripts' in the unraid app store
 - 2.Create a new run script. (Name customization)
