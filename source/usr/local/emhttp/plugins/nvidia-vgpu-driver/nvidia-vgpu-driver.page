@@ -23,10 +23,10 @@ error_reporting(E_ALL);
 ini_set('display_errors',1);
 
 //Get value from update check
-$update_check = shell_exec("/usr/local/emhttp/plugins/nvidia-vgpu-driver/include/exec.sh update_check");
+//$update_check = shell_exec("/usr/local/emhttp/plugins/nvidia-vgpu-driver/include/exec.sh update_check");
 
-$filename = "/tmp/nvidia_vgpu_driver";
-$eachlines = file($filename, FILE_IGNORE_NEW_LINES);
+//$filename = "/tmp/nvidia_vgpu_driver";
+//$eachlines = file($filename, FILE_IGNORE_NEW_LINES);
 ?>
 
 <script>
