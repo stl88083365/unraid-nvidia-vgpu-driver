@@ -1,12 +1,12 @@
 # Unraid Nvidia vGPU Driver plugin
 
-- Able big brother can alsCurrent version support: 6.11.5 6.12.4
+- Able big brother can alsCurrent version support: 6.12.6
 
 - Support unraid docker video decoding and virtual machine add vgpu at the same time, 10 and 20 series common card unlock.
 
 - Able big brother can also help to perfect this plug-in.o help to perfect this plug-in.
 
-- If you have any questions, you can join the QQ group: 263813094
+- If you have any questions, you can join the QQ group: 263813094  Telegram: https://t.me/+HQ4HqWjD111hY2Y1
 
 - This is the repository for the Unraid Nvidia vGPU Driver plugin.
 
