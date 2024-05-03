@@ -80,6 +80,17 @@ mdevctl list
 
 - 4.Set the script to run when booting the array
 - 5.Create the nvidia.conf file in the /boot/config/modprobe.d directory and add the content "options nvidia cudahost=1"
+- 6.The VM edits the XML template with the following code:
+
+    <hostdev mode='subsystem' type='mdev' managed='yes' model='vfio-pci' display='off' ramfb='off'>
+      <source>
+        <address uuid='2b6976dd-8620-49de-8d8d-ae9ba47a50db'/>
+      </source>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x08' function='0x0'/>
+    </hostdev>
+
+- uuid, bus , slot Modify according to your needs.
+
 
 ### Credits
 - Thanks to the discord user @mbuchel for the experimental patches
